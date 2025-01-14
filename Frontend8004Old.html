@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breaking News</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            background-color: #4CAF50;
+            color: white;
+            margin: 0;
+            padding: 15px;
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px;
+        }
+        li {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Breaking News</h1>
+    <ul id="news-list">
+        <!-- News items will appear here -->
+    </ul>
+
+    <script>
+        async function fetchNews() {
+            try {
+                const response = await fetch('http://localhost:5000/fetchnews');
+                const data = await response.json();
+                updateNewsList(data);
+            } catch (error) {
+                console.error('Error fetching news:', error);
+            }
+        }
+
+        function updateNewsList(news) {
+            const newsList = document.getElementById('news-list');
+            newsList.innerHTML = ''; // Clear the current list
+
+            news.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = item.message;
+                newsList.appendChild(listItem);
+            });
+        }
+
+        // Fetch news initially and then every 5 seconds
+        fetchNews();
+        setInterval(fetchNews, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breaking News</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            background-color: #4CAF50;
+            color: white;
+            margin: 0;
+            padding: 15px;
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px;
+        }
+        li {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Breaking News</h1>
+    <ul id="news-list">
+        <!-- News items will appear here -->
+    </ul>
+
+    <script>
+        async function fetchNews() {
+            try {
+                // Fetch news from the server
+                const response = await fetch('http://localhost:5000/fetchnews');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                // Ensure data is an array and update the list
+                if (Array.isArray(data)) {
+                    updateNewsList(data);
+                } else {
+                    console.error('Invalid data format: Expected an array');
+                }
+            } catch (error) {
+                console.error('Error fetching news:', error);
+            }
+        }
+
+
+        // Fetch news initially and then every 5 seconds
+        fetchNews();
+        setInterval(fetchNews, 2000);
+
+    function updateNewsList(news) {
+    const newsList = document.getElementById('news-list');
+    newsList.innerHTML = ''; // Clear the current list
+
+    // Add each news item as a link to the list
+    news.forEach((item) => {
+        const listItem = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = item.url || '#'; // Use the item's URL or a fallback
+        link.textContent = item.title || 'Untitled News'; // Use the item's title or a fallback
+        link.target = '_blank'; // Open links in a new tab
+        listItem.appendChild(link);
+        newsList.appendChild(listItem);
+    });
+}
+    </script>
+</body>
+</html>
